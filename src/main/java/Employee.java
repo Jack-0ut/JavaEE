@@ -1,53 +1,49 @@
 import Exceptions.FieldLengthLimitException;
 import Exceptions.IncorrectSalaryException;
 
-public class Employee {
-    private int id;
-    private static int nextId = 0;
-    private String firstname;
-    private String lastname;
-    private double salary;
+import java.util.Objects;
 
-    public Employee(String firstname, String lastname, double salary) throws FieldLengthLimitException,IncorrectSalaryException {
-        setFirstname(firstname);
-        setLastname(lastname);
+public class Employee {
+    protected int id;
+    protected static int nextId = 0;
+    protected String name;
+
+    protected String department;
+    protected double salary;
+    protected int managerID;
+
+    public Employee() {
+
+    }
+
+    public Employee(String name, String department, double salary, int managerID) throws FieldLengthLimitException, IncorrectSalaryException {
+        setName(name);
         setSalary(salary);
         this.id = nextId++;
-        /*this.firstname = firstname;
-        this.lastname = lastname;
-        this.salary = salary;*/
-    }
-    public void printEmployee(){
-        System.out.println("ID:" + " Firstname: " + firstname +
-                " Lastname: " + lastname +  " Salary: " + salary + " USD");
+        this.department = department;
+        this.managerID = managerID;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public void printEmployee() {
+        System.out.println("ID: " + id + " Name: " + name +
+                " Department: " + department + " Salary: "
+                + salary + " USD" + " Manager ID: " + managerID);
     }
 
-    public void setFirstname(String firstname) {
-        if (firstname.length() > 15){
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        if (name.length() > 15) {
             try {
-                throw  new FieldLengthLimitException("Firstname has more than 15 symbols!");
+                throw new FieldLengthLimitException("Name has more than 50 symbols!");
             } catch (FieldLengthLimitException e) {
                 System.out.println(e.getMessage());
             }
-        }else{this.firstname = firstname;}
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        if(lastname.length() > 25){
-            try{
-                throw new FieldLengthLimitException("Lastname has more than 25 symbols!");
-            }catch (FieldLengthLimitException e){
-                System.out.println(e.getMessage());
-            }
-        }else{this.lastname = lastname;}
+        } else {
+            this.name = name;
+        }
     }
 
     public double getSalary() {
@@ -55,13 +51,39 @@ public class Employee {
     }
 
     public void setSalary(double salary) {
-        if(salary < 0){
-            try{
+        if (salary < 0) {
+            try {
                 throw new IncorrectSalaryException("Salary is negative!");
-            }catch (IncorrectSalaryException e){
+            } catch (IncorrectSalaryException e) {
                 System.out.println(e.getMessage());
             }
+        } else {
+            this.salary = salary;
         }
-        else{this.salary = salary;}
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public int getManagerID() {
+        return managerID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Double.compare(employee.salary, salary) == 0 && managerID == employee.managerID && Objects.equals(name, employee.name) && Objects.equals(department, employee.department);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, department, salary, managerID);
     }
 }
